@@ -1,0 +1,29 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+| Case ID | Title                                                           | Category | Justification                                                   | Layer    |
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+| TC01    | Login with valid credentials                                    | Auto     | Core authentication functionality used frequently               | UI       |
+| TC02    | Login with invalid password                                     | Auto     | Important negative login validation                             | UI       |
+| TC03    | Login with locked user credentials                              | Auto     | Security and access restriction validation                      | UI/API   |
+| TC04    | Add item to cart                                                | Auto     | Core e-commerce cart functionality                              | UI/API   |
+| TC05    | Remove particular item from cart                                | Auto     | Cart management validation                                      | UI/API   |
+| TC06    | Navigate to product page and add item to cart                   | Auto     | Product navigation and cart integration validation              | UI       |
+| TC07    | Validate cart icon navigation to cart page                      | Auto     | Common navigation workflow validation                           | UI       |
+| TC08    | Remove item from cart before checkout                           | Auto     | Checkout preparation validation                                 | UI       |
+| TC09    | Validate continue shopping button functionality                 | Auto     | Navigation consistency validation                               | UI       |
+| TC10    | Validate checkout button functionality                          | Auto     | Critical checkout workflow validation                           | UI       |
+| TC11    | Validate cancel button navigation from checkout page            | Auto     | Workflow interruption handling validation                       | UI       |
+| TC12    | Validate continue button functionality in checkout page         | Auto     | Checkout information form validation                            | UI       |
+| TC13    | Validate total item price calculation                           | Auto     | Important business logic and pricing validation                 | API/Unit |
+| TC14    | Validate cancel button functionality in overview page           | Auto     | Navigation and flow consistency validation                      | UI       |
+| TC15    | Validate finish button functionality                            | Auto     | End-to-end order completion validation                          | UI       |
+| TC16    | Validate overall UI layout and page alignment                   | Manual   | Requires human visual observation                               | N/A      |
+| TC17    | Validate application responsiveness on mobile devices           | Manual   | Better validated manually across multiple screen sizes          | N/A      |
+| TC18    | Validate font readability and text visibility                   | Manual   | Human judgment required for usability validation                | N/A      |
+| TC19    | Validate color consistency across pages                         | Manual   | Visual appearance validation cannot be fully automated          | N/A      |
+| TC20    | Validate browser back and forward navigation behavior           | Manual   | Real-user navigation experience validation                      | UI       |
+| TC21    | Validate application behavior under slow internet connection    | Manual   | Requires environment-based manual observation                   | N/A      |
+| TC22    | Validate user experience during rapid multiple button clicks    | Manual   | Human interaction testing scenario                              | UI       |
+| TC23    | Validate accessibility and keyboard navigation                  | Manual   | Requires manual accessibility verification                      | UI       |
+| TC24    | Validate error message readability and placement                | Manual   | User experience and design validation                           | UI       |
+| TC25    | Validate session behavior after long inactivity                 | Manual   | Difficult to stabilize completely using automation              | UI       |
+---------------------------------------------------------------------------------------------------------------------------------------------------------

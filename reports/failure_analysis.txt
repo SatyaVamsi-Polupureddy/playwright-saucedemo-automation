@@ -1,0 +1,157 @@
+1)
+TEST NAME:
+Login with Valid Credentials
+
+TRACE REFERENCE:
+Trace Viewer → Action Log → beforeEach Hook → Page Navigation
+Failure observed before locator interaction with username field.
+
+STEP NUMBER:
+Step 1 - Navigate to Login Page
+
+TRACE OBSERVATION:
+The Playwright Trace Viewer showed that the test execution moved directly to:
+getByTestId('username').fill() before the page navigation had completed. The action log confirmed that the login page was still loading when Playwright was trying to access the username input field.
+
+ERROR OBSERVED:
+locator.fill: Test ended.
+waiting for getByTestId('username')
+
+ROOT CAUSE:
+The async navigation method inside test.beforeEach() was used without await. Because of this, Playwright continued instead of waiting for the login page to load fully.
+
+Problematic Code:
+test.beforeEach(async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  loginPage.gotoLoginPage();
+});
+
+TECHNICAL ANALYSIS:
+This was not a browser-side error. The actual issue was caused by a missing await statement. 
+
+RESOLUTION:
+Added await before gotoLoginPage() to ensure page navigation completes before interacting with locators.
+
+Fixed Code:
+test.beforeEach(async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.gotoLoginPage();
+});
+
+OUTCOME:
+The login page now loads fully before locator interaction begins. The test executes successfully without errors.
+
+--------------------------------------------------------------------------------
+2)
+TEST NAME:
+Inventory Page Navigation Validation
+
+TRACE REFERENCE:
+Trace Viewer → Network Timeline → Redirect Sequence
+Trace Viewer → Screenshot at Failure Point
+
+STEP NUMBER:
+Step 2 - Navigate to Inventory Page
+
+TRACE OBSERVATION:
+The Playwright Trace Viewer network timeline showed that the browser is trying to open:
+https://www.saucedemo.com/inventory.html
+But, instead of staying on the inventory page, the application redirected back to login page. The screenshot captured at the failure point confirmed that the Products page heading was not present because the session authentication had failed.
+
+ERROR OBSERVED:
+expect(locator).toBeVisible() failed
+
+Locator:
+getByText(/Products/)
+
+Error:
+element(s) not found
+
+ROOT CAUSE:
+The authenticated session stored in state.json was either not loaded correctly or had become invalid. Since SauceDemo requires a valid authenticated session to access inventory.html, the application redirected the user back to the login page.
+
+Because of this redirect:
+- Inventory page did not load
+- "Products" heading was absent
+- Visibility assertion failed after timeout
+
+Problematic Code:
+async gotoInventoryPage() {
+  await this.page.goto(process.env.INVENTORY_PAGE_URL!);
+
+  await expect(
+    this.page.getByText(/Products/)
+  ).toBeVisible();
+}
+
+RESOLUTION:
+1. Ensured storageState was correctly configured inside tests.
+2. Added URL logging and debugging to identify unexpected redirects.
+3. Replaced visible text locator with stable data-test locator.
+
+Improved Validation:
+await expect(
+  this.page.getByTestId("title")
+).toHaveText("Products");
+
+OUTCOME:
+After correctly restoring the authenticated session, the browser remained on inventory.html and the inventory page validation passed successfully.
+
+--------------------------------------------------------------------------------
+3)
+TEST NAME:
+Authentication State Reuse using state.json
+
+TRACE REFERENCE:
+Trace Viewer → Redirect Behavior during Protected Page Access
+
+STEP NUMBER:
+Step 1 - Execute Authenticated Test Suite
+
+TRACE OBSERVATION:
+Trace Viewer showed that authenticated tests failed whenever state.json was outdated or missing. Protected pages such as:
+- inventory.html
+- checkout-step-one.html
+
+redirected back to the login page during test execution. The browser context did not contain a fresh authenticated session unless auth.setup.ts was manually executed beforehand.
+
+ROOT CAUSE:
+The authentication setup script existed separately from Playwright's automated test lifecycle. Because it was not integrated into the framework configuration, the authentication session was generated manually and became outdated over time.
+
+As a result:
+- Tests depended on manual execution
+- Sessions expired or became invalid
+- Protected pages redirected to login
+- Assertions failed due to missing elements
+
+PREVIOUS WORKFLOW:
+1. Run:
+   node utils/auth.setup.ts
+
+2. Run:
+   npx playwright test
+
+This introduced instability and inconsistent execution behavior.
+
+RESOLUTION:
+Integrated authentication setup into Playwright configuration using globalSetup.
+
+Added in playwright.config.ts:
+globalSetup: "./utils/auth.setup.ts"
+
+Also updated auth.setup.ts to:
+- Export default async function
+- Save updated storage state before test execution
+
+UPDATED WORKFLOW:
+1. Run:
+   npx playwright test
+
+2. Playwright automatically:
+   - Executes auth.setup.ts
+   - Creates fresh state.json
+   - Restores authenticated session
+   - Starts test execution
+
+OUTCOME:
+Authentication session generation became fully automated. Tests now execute consistently without requiring manual authentication setup before every run.

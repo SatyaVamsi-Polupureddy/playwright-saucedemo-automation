@@ -1,0 +1,14 @@
+{
+  "validCredentials": {
+    "userName": "standard_user",
+    "password": "secret_sauce"
+  },
+  "invalidCredentials": {
+    "userName": "invalid_user",
+    "password": "invalid_passsword"
+  },
+  "lockedUserCredentials": {
+    "userName": "locked_out_user",
+    "password": "secret_sauce"
+  }
+}
