@@ -34,20 +34,17 @@ export class CartPage {
 
   async removeItemFromCart(itemNo: number) {
     const count = await this.cartItems.count();
-
     if (itemNo < 0 || itemNo >= count) {
       throw new Error(
         `Item index ${itemNo} out of bounds. Cart count: ${count}`,
       );
     }
-
     await this.cartItems
       .nth(itemNo)
       .getByRole("button", {
         name: "Remove",
       })
       .click();
-
     await expect(this.cartItems).toHaveCount(count - 1);
   }
 
