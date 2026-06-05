@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { currentsReporter } from "@currents/playwright";
 import dotenv from "dotenv";
 dotenv.config();
 /**
@@ -23,7 +24,7 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: "html",
+  reporter: [currentsReporter()],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   globalSetup: "./utils/auth.setup.ts",
   use: {
@@ -32,6 +33,8 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on",
+    video: "on",
+    screenshot: "on",
     testIdAttribute: "data-test",
   },
 

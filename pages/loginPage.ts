@@ -14,7 +14,7 @@ export class LoginPage {
   }
 
   async gotoLoginPage() {
-    await this.page.goto("/");
+    await this.page.goto(process.env.BASE_URL!);
     console.log("redirected");
     await expect(this.page.getByText(/Swag Labs/)).toBeVisible();
   }
